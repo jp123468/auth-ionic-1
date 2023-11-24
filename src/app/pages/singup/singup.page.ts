@@ -44,6 +44,10 @@ export class SingupPage implements OnInit {
     await toast.present();
   }
 
+  resetForm() {
+    this.singUpForm.reset();
+  }
+
 
   async singUp() {
     const loading = await this.loadingCtrl.create()
@@ -61,6 +65,7 @@ export class SingupPage implements OnInit {
 
       if (user) {
         loading.dismiss();
+        this.resetForm();
         this.router.navigate(['/home']);
       } 
 

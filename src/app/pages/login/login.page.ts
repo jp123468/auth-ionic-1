@@ -41,6 +41,10 @@ export class LoginPage implements OnInit {
     await toast.present();
   }
 
+  resetForm() {
+    this.loginForm.reset();
+  }
+
   async login() {
     const loading = await this.loadingCtrl.create();
     await loading.present();
@@ -56,6 +60,7 @@ export class LoginPage implements OnInit {
   
       if( user ) {
         loading.dismiss();
+        this.resetForm();
         this.router.navigate(['/home']);
       }
     } else {
