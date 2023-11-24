@@ -1,0 +1,19 @@
+ion-item {
+    --background: #dfd7d7;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    color: black;
+}
+
+.header {
+    margin-top: 100px;
+    margin-bottom: 80px;
+    text-align: center;
+    .sub-title{
+        color: gray;
+        font-size: 0.9rem;
+    }
+    .title{
+        font-size: 2rem;
+    }
+}
