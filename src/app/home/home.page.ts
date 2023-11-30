@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,15 @@ import { Router } from '@angular/router';
 export class HomePage implements OnInit {
 
   email: any
+  segment = 'chats';
+  users = [
+    {id: 1, name: 'NIkhil', photo: 'https://i.pravatar.cc/315'},
+    {id: 2, name: 'XYZ', photo: 'https://i.pravatar.cc/325'},
+  ];
+  chatRooms = [
+    {id: 1, name: 'NIkhil', photo: 'https://i.pravatar.cc/315'},
+    {id: 2, name: 'XYZ', photo: 'https://i.pravatar.cc/325'},
+  ];
 
   constructor(
     private router: Router,
@@ -30,12 +40,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit(): void {
-      this.authService.getProfile().then( user => {
-        this.email = user?.email;
-      })
-      .catch(err => {
-        this.toastPresent("Error getting user")
-      });
+      
   };
 
   async singOut () {
@@ -49,5 +54,9 @@ export class HomePage implements OnInit {
         this.toastPresent("Error sing out, wait a moment...");
       })
   };
+
+  getChat(item: any) {
+    this.router.navigate(['/chats', item?.id]);
+  }
 
 }

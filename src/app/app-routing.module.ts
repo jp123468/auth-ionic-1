@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'landing',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'landing',
     loadChildren: () => import('./pages/landing/landing.module').then( m => m.LandingPageModule)
+  },
+  {
+    path: 'chats/:id',
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
   },
 ];
 
