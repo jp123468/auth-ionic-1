@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthenticationService } from '../services/authentication.service';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ChatService } from '../services/chat.service';
 
@@ -16,7 +16,8 @@ export class HomePage implements OnInit {
   segment = 'chats';
 
   users: Observable<any>;
-
+  chatRooms: Observable<any>;
+openNewChats: boolean = false;
 
 
   constructor(
@@ -39,7 +40,14 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.getUsers();
+    this.getRooms()
   };
+
+  getRooms() {
+    this.chatService.getChatRoom();
+    this.chatRooms = this.chatService.chatRooms;
+    console.log(this.chatRooms)
+  }
 
   async singOut() {
     const loading = await this.loadingCtrl.create()
@@ -54,13 +62,36 @@ export class HomePage implements OnInit {
   };
 
   getChat(item: any) {
-    this.router.navigate(['/chats', item?.id]);
-
+    this.startChat(item)
   }
 
   getUsers() {
     this.chatService.getUsers()
     this.users = this.chatService.users;
+  }
+
+  cancel() {
+    this.openNewChats = false;
+  }
+
+  async startChat(item: any) {
+    try {
+      const room = await this.chatService.createChatRooms(item?.uid);
+      this.cancel();
+      const navData: NavigationExtras = {
+        queryParams: {
+          name: item?.name
+        }
+      }
+      console.log(room)
+      this.router.navigate(['/chats', room?.id], navData);
+    } catch (error) {
+      throw(error);
+    }
+  }
+
+  getUser(user: any) {
+    return user;
   }
 
 }

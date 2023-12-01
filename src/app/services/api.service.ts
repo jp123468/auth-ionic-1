@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { setDoc, doc, Firestore, collectionData } from '@angular/fire/firestore'
-import { FieldPath, collection, getDoc, query, where } from 'firebase/firestore';
+import { setDoc, doc, Firestore, collectionData, docData } from '@angular/fire/firestore'
+import { FieldPath, addDoc, collection, getDoc, getDocs, query, where } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,13 @@ export class ApiService {
     return collection(this.firestore, path);
   }
 
+  
+  addDocument(path: any, data: any) {
+    const dataRef = this.collectionRef(path);
+    return addDoc(dataRef, data);
+  }
+
+
   setDocument(path: any, data: any) {
     const dataRef = this.docRef(path);
     return setDoc(dataRef, data)
@@ -36,12 +43,31 @@ export class ApiService {
       dataRef = q
     }
 
-    const collection_data = collectionData<any>(dataRef);
+    const collection_data = collectionData<any>(dataRef, {idField:  'id'});
     return collection_data;
+  }
+
+  getDocs(path: any, queryFn: any) {
+    let dataRef: any = this.collectionRef(path);
+    if (queryFn) {
+      const q = query(dataRef, queryFn);
+      dataRef = q;
+    }
+    return getDocs(dataRef);
   }
 
   whereQuery(fieldPath: any, condition: any, value: any) {
     return where(fieldPath, condition, value);
+  }
+
+  docDataQuery(path: any, queryFn: any) {
+    let dataRef: any = this.docRef(path);
+    if (queryFn) {
+      const q = query(dataRef, queryFn);
+      dataRef = q;
+    }
+   let doc_data = docData<any>(dataRef, {idField: 'id'});
+    return doc_data;
   }
 
 

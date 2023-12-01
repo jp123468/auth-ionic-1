@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth'
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthenticationService } from './authentication.service';
-import { Observable } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { ApiService } from './api.service';
+import { getDocs, query } from 'firebase/firestore';
 
 export interface User {
   uid: string;
@@ -27,6 +28,7 @@ export class ChatService {
 
   currentUserId: string;
   public users: Observable<any>;
+  public chatRooms : Observable<any>;
 
   constructor(
     private api: ApiService,
@@ -47,7 +49,61 @@ export class ChatService {
     )
   }
 
+  async createChatRooms(user_id: any) {
+    try {
+      let room: any;
+      const querySnapshot = await this.api.getDocs(
+        'chatRooms',
+        this.api.whereQuery(
+          'members',
+          'in',
+          [[user_id, this.currentUserId], [this.currentUserId, user_id ]]
+        )
+      );
 
+      room = await querySnapshot.docs.map( (doc: any) => {
+        let item = doc.data();
+        item.id = doc.id;
+        return item;
+      })
+
+      if(room?.lengt > 0 ) return room[0];
+      const data = {
+        members: [
+          this.currentUserId,
+          user_id
+        ],
+        type: 'private',
+        createdAt: new Date(),
+        updateAt: new Date(),
+      };
+      room = await this.api.addDocument('chatRooms', data);
+      return room;
+    } catch (error) {
+      throw(error);
+    }
+  }
+
+  getChatRoom() {
+ 
+    this.chatRooms = this.api.collectionDataQuery(
+      'chatRooms',
+      this.api.whereQuery('members', 'array-contains', this.currentUserId),
+
+    ).pipe(
+      map((data: any[]) => {
+        data.map((item: any) => {
+          const user_data = item.members.filter( (x:any) => x != this.currentUserId );
+          const user = this.api.docDataQuery(`users/${user_data[0]}`, true);
+          item.user = user;
+        });
+        return data;
+      }),
+      switchMap(data => {
+        return of(data);
+      })
+    )
+  }
 
 }
 

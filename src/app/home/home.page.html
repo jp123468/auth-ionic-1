@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-list *ngIf="(users | async) as user$">
+  <ion-list *ngIf="(chatRooms | async) as user$">
 
     <ion-list-header class="ion-padding-bottom" color="light">
       RECENT CHATS
@@ -19,18 +19,20 @@
     *ngFor="let item of user$"
     (click)="getChat(item)"
     [detail]="true">
-      <ion-avatar slot="start">
-        <img [src]="item?.photo" />
-      </ion-avatar>
-      <ion-label>
-        {{item?.name}}
-        <p>
-          <ion-text>
-            message
-          </ion-text>
-        </p>
-      </ion-label>
-      <ion-text slot="end" color="medium">10:00 AM</ion-text>
+      <ng-container *ngIf="(item?.user | async) as user">
+        <ion-avatar slot="start">
+          <img [src]="getUser(user)?.photo" />
+        </ion-avatar>
+        <ion-label>
+          {{getUser(user)?.name}}
+          <p>
+            <ion-text>
+              message
+            </ion-text>
+          </p>
+        </ion-label>
+        <ion-text slot="end" color="medium">10:00 AM</ion-text>
+      </ng-container>
     </ion-item>
 
   </ion-list>
