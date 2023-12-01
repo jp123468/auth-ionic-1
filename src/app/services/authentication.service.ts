@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth'
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
+import { getAuth } from 'firebase/auth';
 
 
 @Injectable({
@@ -32,7 +33,7 @@ export class AuthenticationService {
   }
 
   getId() {
-    const auth = this.ngFireAuth;
+    const auth = getAuth();
     this.currentUser = auth.currentUser;
     console.log(this.currentUser);
     return this.currentUser?.uid;
@@ -72,13 +73,13 @@ export class AuthenticationService {
       this._uid.next(null);
       return true
     } catch (error) {
-      throw(error)
+      throw (error)
     }
   }
 
   checkAuth(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.ngFireAuth.onAuthStateChanged(user =>{
+      this.ngFireAuth.onAuthStateChanged(user => {
         console.log("user auth: ", user);
         resolve(user);
       })
@@ -86,11 +87,11 @@ export class AuthenticationService {
   }
 
   async getUserData(id: any) {
-    const docSnap:any=await this.apiService.getDocById(`users/${id}`);
-    if(docSnap?.exits()) {
+    const docSnap: any = await this.apiService.getDocById(`users/${id}`);
+    if (docSnap?.exits()) {
       return docSnap.data();
     } else {
-      throw("No such document exists")
+      throw ("No such document exists")
     }
   }
 }

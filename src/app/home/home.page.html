@@ -9,14 +9,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-list *ngIf="segment == 'chats' && (chatRooms) as rooms">
+  <ion-list *ngIf="(users | async) as user$">
 
     <ion-list-header class="ion-padding-bottom" color="light">
       RECENT CHATS
     </ion-list-header>
 
     <ion-item
-    *ngFor="let item of rooms" 
+    *ngFor="let item of user$"
     (click)="getChat(item)"
     [detail]="true">
       <ion-avatar slot="start">

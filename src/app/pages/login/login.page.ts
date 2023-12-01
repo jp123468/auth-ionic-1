@@ -31,7 +31,7 @@ export class LoginPage implements OnInit {
     })
   }
 
-  async presentToast( message: string ) {
+  async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
       duration: 2500,
@@ -48,25 +48,24 @@ export class LoginPage implements OnInit {
   async login() {
     const loading = await this.loadingCtrl.create();
     await loading.present();
-    if( this.loginForm.valid ) {
+    if (this.loginForm.valid) {
       const user = await this.authService.login(
         this.loginForm.value.email,
         this.loginForm.value.password
       )
-      .catch( err => {
-        loading.dismiss();
-        this.presentToast("Credentials are invalid");
-      })
-  
-      if( user ) {
-        loading.dismiss();
-        this.resetForm();
-        this.router.navigate(['/home']);
-      }
-    } else {
-      loading.dismiss();
-      this.presentToast(" Values are invalid");
+        .then(res => {
+          loading.dismiss();
+          this.resetForm();
+          this.router.navigate(['/home']);
+
+        })
+        .catch(err => {
+          loading.dismiss();
+          this.presentToast("Credentials are invalid");
+        })
+
     }
-  } 
+
+  }
 
 }
