@@ -1,7 +1,8 @@
 {
   "name": "auth-app",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }
